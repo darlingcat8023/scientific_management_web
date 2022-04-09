@@ -44,7 +44,7 @@
                       placeholder="请输入身份证"
                     ></el-input>
                   </el-form-item>
-                  <el-form-item label="用户类型">
+                  <el-form-item label="用户类型" style="text-align: left">
                     <el-radio-group v-model="form.userType">
                       <el-radio-button label="1">老师</el-radio-button>
                       <el-radio-button label="0">学生</el-radio-button>
@@ -53,7 +53,7 @@
                 </el-form>
               </div>
               <div class="sumbit-box">
-                <el-button @click="sumbit">注册</el-button>
+                <el-button @click="sumbit" type="primary">注册</el-button>
               </div>
             </div>
           </div>
