@@ -1,6 +1,6 @@
-<template >
-  <div id="login">
-    <div class="login">
+<template>
+  <div id="user">
+    <div class="user">
       <el-row>
         <el-col :span="14">
           <div class="left-box">
@@ -18,25 +18,25 @@
         </el-col>
         <el-col :span="10">
           <div class="right-box">
-            <div class="login-title">
+            <div class="user-title">
               <h2>欢迎登录</h2>
             </div>
-            <div class="login-form">
+            <div class="user-form">
               <el-form
                 :model="form"
                 :rules="rules"
                 ref="form"
                 label-width="0px"
               >
-                <el-form-item prop="mobile">
+                <el-form-item prop="userMobile">
                   <el-input
-                    v-model="form.mobile"
+                    v-model="form.userMobile"
                     placeholder="手机号"
                   ></el-input>
                 </el-form-item>
-                <el-form-item prop="password">
+                <el-form-item prop="userPassword">
                   <el-input
-                    v-model="form.password"
+                    v-model="form.userPassword"
                     type="password"
                     placeholder="密码"
                   ></el-input>
@@ -57,22 +57,32 @@
 </template>
 
 <script>
+import userApi from "@/api/user";
+import cookiesUtils from "@/cookies";
+
 export default {
-  name: "login",
+  name: "user",
   data: () => {
     return {
-      form: {},
+      form: {
+        userMobile: "",
+        userPassword: "",
+      },
       rules: {
-        username: [
+        userMobile: [
           { required: true, message: "请输入手机号", trigger: "blur" },
-          { min: 11, max: 11, message: "长度在 11 个字符", trigger: "blur" },
+          {
+            pattern: /^1[3456789]\d{9}$/,
+            message: "手机号格式不正确",
+            trigger: "blur",
+          },
         ],
-        password: [
+        userPassword: [
           { required: true, message: "请输入密码", trigger: "blur" },
           {
             min: 6,
-            max: 20,
-            message: "长度在 6 到 20 个字符",
+            max: 12,
+            message: "密码长度在6到12个字符",
             trigger: "blur",
           },
         ],
@@ -83,18 +93,30 @@ export default {
     submit() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          this.$router.push("/");
+          userApi.login(this.form).then((res) => {
+            console.log("res ", res.data);
+            cookiesUtils.SetCookiesToken(res.data);
+            console.log("cookies", cookiesUtils.GetCookiesToken());
+            this.$message({
+              message: "登录成功",
+              type: "success",
+            });
+            this.$router.push("/");
+          });
         } else {
           return false;
         }
       });
     },
   },
+  mounted() {
+    cookiesUtils.DeleteCookies();
+  },
 };
 </script>
 
 <style scoped lang="less">
-.login {
+.user {
   width: 100vw;
   height: 100vh;
 }
@@ -144,17 +166,17 @@ export default {
   align-content: center;
   flex-direction: column;
 
-  .login-title {
+  .user-title {
     padding: 20px;
 
-    .login-title h2 {
+    .user-title h2 {
       font-size: 30px;
       font-weight: bold;
       color: #333;
     }
   }
 
-  .login-form {
+  .user-form {
     padding: 20px;
   }
 

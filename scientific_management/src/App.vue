@@ -18,4 +18,7 @@ body {
   text-align: center;
   color: #2c3e50;
 }
+.el-pagination {
+  text-align: right;
+}
 </style>
