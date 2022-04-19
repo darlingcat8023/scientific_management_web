@@ -18,11 +18,35 @@ function registry(data) {
     .finally();
 }
 
+function userList(data) {
+  return axios
+    .get("/api/account/filter", { params: data })
+    .then((response) => {
+      return response;
+    })
+    .finally();
+}
+
+function userDetail(data) {
+  return axios
+    .get("/api/account/securityDetail", { params: data })
+    .then((response) => {
+      return response;
+    })
+    .finally();
+}
+
 export default {
   async login(data) {
     return login(data);
   },
   async registry(data) {
     return registry(data);
+  },
+  async userList(data) {
+    return userList(data);
+  },
+  async userDetail(data) {
+    return userDetail(data);
   },
 };

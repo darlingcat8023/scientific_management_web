@@ -18,7 +18,12 @@
         clearable
         filterable
       >
-        <el-option v-for="(item,key) in projectTypeList" :key=key :value="Object.values(item)[0]" :label="Object.values(item)[0]"></el-option>
+        <el-option
+          v-for="(item, key) in projectTypeList"
+          :key="key"
+          :value="Object.values(item)[0]"
+          :label="Object.values(item)[0]"
+        ></el-option>
       </el-select>
       <el-select
         v-model="projectStatus"
@@ -49,9 +54,8 @@
         icon="el-icon-search"
         @click="searchProject"
         style="margin-left: 16px"
-      >搜索
-      </el-button
-      >
+        >搜索
+      </el-button>
     </div>
 
     <el-divider />
@@ -82,12 +86,12 @@
               scope.row.projectStatus === 0
                 ? "已拒绝"
                 : scope.row.projectStatus === 1
-                  ? "已创建"
-                  : scope.row.projectStatus === 2
-                    ? "已提交"
-                    : scope.row.projectStatus === 3
-                      ? "已通过"
-                      : ""
+                ? "已创建"
+                : scope.row.projectStatus === 2
+                ? "已提交"
+                : scope.row.projectStatus === 3
+                ? "已通过"
+                : ""
             }}
           </el-tag>
         </template>
@@ -97,10 +101,16 @@
       <el-table-column label="操作" width="180">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="handleEdit(scope.row)"
-          >编辑
+            >编辑信息
+          </el-button>
+          <el-button type="text" size="small" @click="handleViewUser(scope.row)"
+            >查看人员
+          </el-button>
+          <el-button type="text" size="small" @click="handleEditUser(scope.row)"
+            >编辑人员
           </el-button>
           <el-button type="text" size="small" @click="handleDelete(scope.row)"
-          >删除
+            >删除
           </el-button>
         </template>
       </el-table-column>
@@ -113,16 +123,46 @@
       @current-change="page_change"
       :current-page="page"
     />
+    <project-form
+      @success="formCallback"
+      :data="formData"
+      v-if="showForm"
+      @cancel="formCancel"
+    ></project-form>
+    <project-user-form
+      @success="userFormCallback"
+      :projectId="formId"
+      v-if="showUserForm"
+      @cancel="userFormCancel"
+    ></project-user-form>
+    <project-user-data
+      :project-id="formId"
+      v-if="showUserData"
+      @cancel="userDataCancel"
+    ></project-user-data>
   </div>
 </template>
 
 <script>
 import projectApi from "@/api/project";
+import ProjectForm from "@/views/projectForm";
+import projectUserForm from "@/views/projectUserForm";
+import projectUserData from "@/views/projectUserData";
 
 export default {
   name: "iCreatedProject",
+  components: {
+    ProjectForm,
+    projectUserForm,
+    projectUserData,
+  },
   data: () => {
     return {
+      showUserData: false,
+      showUserForm: false,
+      formId: 0,
+      showForm: false,
+      formData: {},
       count: 0,
       page: 1,
       projectList: [],
@@ -132,11 +172,45 @@ export default {
       projectStatus: "",
       greaterThen: "",
       lessThen: "",
-      projectTypeList: []
+      projectTypeList: [],
     };
   },
   methods: {
-    page_change: function(val) {
+    handleViewUser(row) {
+      this.formId = row.id;
+      this.showUserData = true;
+    },
+    userDataCancel() {
+      this.showUserData = false;
+    },
+    handleEditUser(row) {
+      this.formId = row.id;
+      this.showUserForm = true;
+    },
+    userFormCallback() {
+      this.showUserForm = false;
+      this.getData();
+    },
+    userFormCancel() {
+      this.showUserForm = false;
+    },
+    formAdd() {
+      this.formData = {};
+      this.showForm = true;
+    },
+    formCancel() {
+      this.showForm = false;
+      this.formData = {};
+    },
+    handleEdit(row) {
+      this.showForm = true;
+      this.formData = row;
+    },
+    formCallback() {
+      this.showForm = false;
+      this.getData();
+    },
+    page_change: function (val) {
       this.loading = true;
       this.page = val;
       projectApi
@@ -147,7 +221,7 @@ export default {
           projectType: this.projectType,
           projectStatus: this.projectStatus,
           greaterThen: this.greaterThen,
-          lessThen: this.lessThen
+          lessThen: this.lessThen,
         })
         .then((res) => {
           this.projectList = res.data;
@@ -166,7 +240,7 @@ export default {
           projectType: this.projectType,
           projectStatus: this.projectStatus,
           greaterThen: this.greaterThen,
-          lessThen: this.lessThen
+          lessThen: this.lessThen,
         })
         .then((res) => {
           this.count = res.data;
@@ -178,21 +252,21 @@ export default {
               projectType: this.projectType,
               projectStatus: this.projectStatus,
               greaterThen: this.greaterThen,
-              lessThen: this.lessThen
+              lessThen: this.lessThen,
             })
             .then((res) => {
               this.loading = false;
               this.projectList = res.data;
             });
         });
-    }
+    },
   },
   mounted() {
     this.getData();
     projectApi.projectType().then((res) => {
       this.projectTypeList = res.data;
     });
-  }
+  },
 };
 </script>
 

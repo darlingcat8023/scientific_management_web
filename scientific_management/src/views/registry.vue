@@ -50,6 +50,34 @@
                       <el-radio-button label="0">学生</el-radio-button>
                     </el-radio-group>
                   </el-form-item>
+                  <el-form-item label="用户属性" style="text-align: left">
+                    <el-button @click="addUserExtend">新增</el-button>
+                    <el-row
+                      v-for="(value, key) in form.userExtendData"
+                      :key="key"
+                      style="margin-top: 18px"
+                    >
+                      <el-col :span="6">
+                        <el-input
+                          v-model="value.name"
+                          placeholder="请输入属性名"
+                        ></el-input>
+                      </el-col>
+                      <el-col :span="6" :offset="1">
+                        <el-input
+                          v-model="value.value"
+                          placeholder="请输入属性值"
+                        ></el-input>
+                      </el-col>
+                      <el-col :span="6" :offset="1">
+                        <el-button
+                          type="danger"
+                          icon="el-icon-delete"
+                          @click="deleteUserExtend(key)"
+                        ></el-button>
+                      </el-col>
+                    </el-row>
+                  </el-form-item>
                 </el-form>
               </div>
               <div class="sumbit-box">
@@ -76,7 +104,8 @@ export default {
         userPassword: "",
         userIdentity: "",
         userType: "",
-        userExtend: "123",
+        userExtend: "",
+        userExtendData: [],
       },
       rules: {
         userName: [
@@ -115,10 +144,28 @@ export default {
     };
   },
   methods: {
+    addUserExtend() {
+      this.form.userExtendData.push({
+        name: "",
+        value: "",
+      });
+    },
+    deleteUserExtend(index) {
+      this.form.userExtendData.splice(index, 1);
+    },
+    convertListToObject(list) {
+      let obj = {};
+      list.forEach((item) => {
+        obj[item.name] = item.value;
+      });
+      return obj;
+    },
     sumbit() {
       this.$refs.form.validate((valid) => {
         if (valid) {
           this.form.userType = this.form.userType === "1" ? 1 : 0;
+          let userExtend = this.convertListToObject(this.form.userExtendData);
+          this.form.userExtend = JSON.stringify(userExtend);
           userApi.registry(this.form).then((res) => {
             console.log(res);
             this.$message({

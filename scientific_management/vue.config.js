@@ -6,7 +6,7 @@ module.exports = {
     disableHostCheck: true,
     proxy: {
       "/api": {
-        target: "http://192.168.31.48:8080",
+        target: "http://192.168.31.122:8080",
         changeOrigin: true,
       },
     },

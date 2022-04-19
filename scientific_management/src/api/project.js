@@ -29,7 +29,43 @@ function iCreatedProjectCount(data) {
 
 function iJoinedProject(data) {
   return axios
-    .get("/api/register", { params: data })
+    .get("/api/projectInfo/listByParticipant", { params: data })
+    .then((response) => {
+      return response;
+    })
+    .finally();
+}
+
+function iJoinedProjectCount(data) {
+  return axios
+    .get("/api/projectInfo/countByParticipant", { params: data })
+    .then((response) => {
+      return response;
+    })
+    .finally();
+}
+
+function projectUpdate(data) {
+  return axios
+    .post("/api/projectInfo/update", data)
+    .then((response) => {
+      return response;
+    })
+    .finally();
+}
+
+function projectUser(data) {
+  return axios
+    .get("/api/projectParticipant/list", { params: data })
+    .then((response) => {
+      return response;
+    })
+    .finally();
+}
+
+function updateProjectUser(projectId, data) {
+  return axios
+    .post(`/api/projectParticipant/add?projectId=${projectId}`, data)
     .then((response) => {
       return response;
     })
@@ -48,5 +84,17 @@ export default {
   },
   async iJoinedProject(data) {
     return iJoinedProject(data);
+  },
+  async iJoinedProjectCount(data) {
+    return iJoinedProjectCount(data);
+  },
+  async projectUpdate(data) {
+    return await projectUpdate(data);
+  },
+  async projectUser(data) {
+    return await projectUser(data);
+  },
+  async updateProjectUser(projectId, data) {
+    return await updateProjectUser(projectId, data);
   },
 };
