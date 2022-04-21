@@ -1,24 +1,20 @@
 # scientific_management
 
-## Project setup
+## 安装依赖
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 运行
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### 页面
 
-### Lints and fixes files
-```
-npm run lint
-```
+#### 登陆
+http://127.0.0.1:9090/login
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+#### 首页
+http://127.0.0.1:9090/
+
