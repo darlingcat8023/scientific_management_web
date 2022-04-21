@@ -2,11 +2,11 @@
 const Timestamp = new Date().getTime();
 module.exports = {
   devServer: {
-    port: 8080,
+    port: 9090,
     disableHostCheck: true,
     proxy: {
       "/api": {
-        target: "http://192.168.31.122:8080",
+        target: "http://127.0.0.1:8080",
         changeOrigin: true,
       },
     },
