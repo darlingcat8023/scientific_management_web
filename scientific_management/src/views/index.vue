@@ -49,18 +49,19 @@
 <script>
 import iCreatedProject from "./iCreatedProject.vue";
 import iJoinedProject from "./iJoinedProject.vue";
+import cookies from "../cookies";
 
 export default {
   name: "index",
   data() {
     return {
       activeIndex: "project",
-      reload: true,
+      reload: true
     };
   },
   components: {
     iCreatedProject,
-    iJoinedProject,
+    iJoinedProject
   },
   methods: {
     handleOpen(key) {
@@ -69,8 +70,13 @@ export default {
       this.$nextTick(() => {
         this.reload = true;
       });
-    },
+    }
   },
+  mounted() {
+    if (!cookies.GetCookiesToken()) {
+      this.$router.push("/login");
+    }
+  }
 };
 </script>
 
