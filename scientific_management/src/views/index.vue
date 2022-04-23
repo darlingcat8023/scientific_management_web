@@ -9,6 +9,7 @@
               class="el-menu-vertical-demo"
               @open="handleOpen"
               background-color="#e4e7ed"
+              v-if="userType === 'user'"
             >
               <el-submenu index="project">
                 <template slot="title">
@@ -26,6 +27,24 @@
                 </template>
               </el-submenu>
             </el-menu>
+            <el-menu
+              :default-active="activeIndex"
+              class="el-menu-vertical-demo"
+              @open="handleOpen"
+              background-color="#e4e7ed"
+              v-if="userType === 'admin'"
+            >
+              <el-submenu index="auditProject">
+                <template slot="title">
+                  <span>审核列表</span>
+                </template>
+              </el-submenu>
+              <el-submenu index="totalInfo">
+                <template slot="title">
+                  <span>统计列表</span>
+                </template>
+              </el-submenu>
+            </el-menu>
           </div>
         </el-col>
         <el-col :span="20">
@@ -39,6 +58,12 @@
             <div v-if="activeIndex === 'i-join-project'">
               <i-joined-project />
             </div>
+            <div v-if="activeIndex === 'auditProject'">
+              <admin-project-list />
+            </div>
+            <div v-if="activeIndex === 'totalInfo'">
+              <admin-total-list></admin-total-list>
+            </div>
           </div>
         </el-col>
       </el-row>
@@ -49,6 +74,8 @@
 <script>
 import iCreatedProject from "./iCreatedProject.vue";
 import iJoinedProject from "./iJoinedProject.vue";
+import AdminTotalList from "./admin/totalList";
+import AdminProjectList from "./admin/projectList";
 import cookies from "../cookies";
 
 export default {
@@ -56,12 +83,15 @@ export default {
   data() {
     return {
       activeIndex: "project",
-      reload: true
+      reload: true,
+      userType: "",
     };
   },
   components: {
     iCreatedProject,
-    iJoinedProject
+    iJoinedProject,
+    AdminTotalList,
+    AdminProjectList,
   },
   methods: {
     handleOpen(key) {
@@ -70,13 +100,18 @@ export default {
       this.$nextTick(() => {
         this.reload = true;
       });
-    }
+    },
   },
   mounted() {
     if (!cookies.GetCookiesToken()) {
       this.$router.push("/login");
     }
-  }
+    if (!cookies.GetCookiesUserType()) {
+      this.$router.push("/login");
+    } else {
+      this.userType = cookies.GetCookiesUserType();
+    }
+  },
 };
 </script>
 

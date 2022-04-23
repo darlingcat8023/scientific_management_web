@@ -5,6 +5,11 @@
     </div>
     <el-divider />
     <div style="text-align: left">
+      <el-button type="primary" @click="createProject">创建项目</el-button>
+    </div>
+
+    <el-divider />
+    <div style="text-align: left">
       <el-input
         v-model="projectName"
         placeholder="请输入项目名称"
@@ -109,8 +114,19 @@
           <el-button type="text" size="small" @click="handleEditUser(scope.row)"
             >编辑人员
           </el-button>
-          <el-button type="text" size="small" @click="handleDelete(scope.row)"
-            >删除
+          <el-button
+            type="text"
+            size="small"
+            @click="handlerCommit(scope.row)"
+            v-if="scope.row.enableCommit"
+            >提交审核
+          </el-button>
+          <el-button
+            type="text"
+            size="small"
+            @click="handlerAudit(scope.row)"
+            v-if="!scope.row.enableCommit"
+            >查看审核
           </el-button>
         </template>
       </el-table-column>
@@ -127,6 +143,7 @@
       @success="formCallback"
       :data="formData"
       v-if="showForm"
+      :formId="formId"
       @cancel="formCancel"
     ></project-form>
     <project-user-form
@@ -140,6 +157,11 @@
       v-if="showUserData"
       @cancel="userDataCancel"
     ></project-user-data>
+    <project-audit
+      :formId="formId"
+      @cancel="closeAudit"
+      v-if="showAudit"
+    ></project-audit>
   </div>
 </template>
 
@@ -148,6 +170,8 @@ import projectApi from "@/api/project";
 import ProjectForm from "@/views/projectForm";
 import projectUserForm from "@/views/projectUserForm";
 import projectUserData from "@/views/projectUserData";
+import projectAudit from "@/views/projectAudit";
+import cookies from "@/cookies";
 
 export default {
   name: "iCreatedProject",
@@ -155,6 +179,7 @@ export default {
     ProjectForm,
     projectUserForm,
     projectUserData,
+    projectAudit,
   },
   data: () => {
     return {
@@ -163,6 +188,7 @@ export default {
       formId: 0,
       showForm: false,
       formData: {},
+      showAudit: false,
       count: 0,
       page: 1,
       projectList: [],
@@ -176,6 +202,29 @@ export default {
     };
   },
   methods: {
+    handlerAudit(row) {
+      this.formId = row.id;
+      this.showAudit = true;
+    },
+    closeAudit() {
+      this.showAudit = false;
+      this.formId = 0;
+    },
+    handlerCommit(row) {
+      projectApi
+        .commitProject({
+          projectId: row.id,
+          userId: cookies.GetCookiesUserId(),
+        })
+        .then(() => {
+          this.$message.success("提交成功");
+        });
+    },
+    createProject() {
+      this.formId = 0;
+      this.formData = {};
+      this.showForm = true;
+    },
     handleViewUser(row) {
       this.formId = row.id;
       this.showUserData = true;
@@ -194,17 +243,14 @@ export default {
     userFormCancel() {
       this.showUserForm = false;
     },
-    formAdd() {
-      this.formData = {};
-      this.showForm = true;
-    },
     formCancel() {
       this.showForm = false;
       this.formData = {};
     },
     handleEdit(row) {
-      this.showForm = true;
+      this.formId = row.id;
       this.formData = row;
+      this.showForm = true;
     },
     formCallback() {
       this.showForm = false;
@@ -215,7 +261,7 @@ export default {
       this.page = val;
       projectApi
         .iCreatedProject({
-          userId: 1,
+          userId: cookies.GetCookiesUserId(),
           page: val,
           projectName: this.projectName,
           projectType: this.projectType,
@@ -235,7 +281,7 @@ export default {
       this.loading = true;
       projectApi
         .iCreatedProjectCount({
-          userId: 1,
+          userId: cookies.GetCookiesUserId(),
           projectName: this.projectName,
           projectType: this.projectType,
           projectStatus: this.projectStatus,
@@ -246,7 +292,7 @@ export default {
           this.count = res.data;
           projectApi
             .iCreatedProject({
-              userId: 1,
+              userId: cookies.GetCookiesUserId(),
               page: this.page,
               projectName: this.projectName,
               projectType: this.projectType,

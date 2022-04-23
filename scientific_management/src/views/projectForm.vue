@@ -6,7 +6,10 @@
           <el-input v-model="form.projectName"></el-input>
         </el-form-item>
         <el-form-item label="学科分类" :label-width="formLabelWidth">
-          <el-input v-model="form.projectType" disabled></el-input>
+          <el-input
+            v-model="form.projectType"
+            :disabled="formId !== 0"
+          ></el-input>
         </el-form-item>
         <el-form-item label="研究方向" :label-width="formLabelWidth">
           <el-input v-model="form.researchDirection"></el-input>
@@ -32,6 +35,7 @@
 
 <script>
 import projectApi from "@/api/project";
+import cookies from "@/cookies";
 
 export default {
   name: "ProjectForm",
@@ -67,9 +71,15 @@ export default {
       type: Object,
       default: () => {},
     },
+    formId: {
+      type: Number,
+      default: 0,
+    },
   },
   created() {
-    this.form = this.data;
+    if (this.formId !== 0) {
+      this.form = this.data;
+    }
   },
   methods: {
     cancel() {
@@ -78,10 +88,19 @@ export default {
     submit() {
       this.$refs.matchForm.validate((valid) => {
         if (valid) {
-          projectApi.projectUpdate(this.form).then(() => {
-            this.$emit("success");
-            this.dialogFormVisible = false;
-          });
+          console.log(this.formId);
+          if (this.formId) {
+            projectApi.projectUpdate(this.form).then(() => {
+              this.$emit("success");
+              this.dialogFormVisible = false;
+            });
+          } else {
+            this.form.creator = cookies.GetCookiesUserId();
+            projectApi.createProject(this.form).then(() => {
+              this.$emit("success");
+              this.dialogFormVisible = false;
+            });
+          }
         }
       });
     },

@@ -20,6 +20,7 @@
 
 <script>
 import projectApi from "@/api/project";
+import cookies from "@/cookies";
 
 export default {
   name: "iJoinedProject",
@@ -38,7 +39,7 @@ export default {
       this.page = val;
       projectApi
         .iJoinedProject({
-          userId: 1,
+          userId: cookies.GetCookiesUserId(),
           page: val,
         })
         .then((res) => {
@@ -50,13 +51,13 @@ export default {
       this.loading = true;
       projectApi
         .iJoinedProjectCount({
-          userId: 1,
+          userId: cookies.GetCookiesUserId(),
         })
         .then((res) => {
           this.count = res.data;
           projectApi
             .iJoinedProject({
-              userId: 1,
+              userId: cookies.GetCookiesUserId(),
               page: this.page,
             })
             .then((res) => {

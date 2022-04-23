@@ -28,15 +28,15 @@
                 ref="form"
                 label-width="0px"
               >
-                <el-form-item prop="userMobile">
+                <el-form-item prop="account">
                   <el-input
-                    v-model="form.userMobile"
-                    placeholder="手机号"
+                    v-model="form.account"
+                    placeholder="帐号"
                   ></el-input>
                 </el-form-item>
-                <el-form-item prop="userPassword">
+                <el-form-item prop="password">
                   <el-input
-                    v-model="form.userPassword"
+                    v-model="form.password"
                     type="password"
                     placeholder="密码"
                   ></el-input>
@@ -46,10 +46,6 @@
                 </el-form-item>
               </el-form>
             </div>
-            <div class="forget-pass">
-              <router-link to="/registry">注册</router-link>
-              <router-link to="/admin-login">管理员登陆</router-link>
-            </div>
           </div>
         </el-col>
       </el-row>
@@ -58,7 +54,7 @@
 </template>
 
 <script>
-import userApi from "@/api/user";
+import adminApi from "@/api/admin";
 import cookiesUtils from "@/cookies";
 
 export default {
@@ -66,27 +62,12 @@ export default {
   data: () => {
     return {
       form: {
-        userMobile: "",
-        userPassword: "",
+        account: "",
+        password: "",
       },
       rules: {
-        userMobile: [
-          { required: true, message: "请输入手机号", trigger: "blur" },
-          {
-            pattern: /^1[3456789]\d{9}$/,
-            message: "手机号格式不正确",
-            trigger: "blur",
-          },
-        ],
-        userPassword: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-          {
-            min: 6,
-            max: 12,
-            message: "密码长度在6到12个字符",
-            trigger: "blur",
-          },
-        ],
+        account: [{ required: true, message: "请输入帐号", trigger: "blur" }],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
       },
     };
   },
@@ -94,11 +75,11 @@ export default {
     submit() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          userApi.login(this.form).then((res) => {
+          adminApi.login(this.form).then((res) => {
             console.log("res ", res.data);
             cookiesUtils.SetCookiesToken(res.data.token);
             cookiesUtils.SetCookiesUserId(res.data.userId);
-            cookiesUtils.SetCookiesUserType("user");
+            cookiesUtils.SetCookiesUserType("admin");
             this.$message({
               message: "登录成功",
               type: "success",

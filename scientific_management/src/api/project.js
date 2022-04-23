@@ -72,6 +72,33 @@ function updateProjectUser(projectId, data) {
     .finally();
 }
 
+function createProject(data) {
+  return axios
+    .post("/api/projectInfo/create", data)
+    .then((response) => {
+      return response;
+    })
+    .finally();
+}
+
+function commitProject(data) {
+  return axios
+    .post("/api/projectInfo/commit", data)
+    .then((response) => {
+      return response;
+    })
+    .finally();
+}
+
+function getProjectAuditList(data) {
+  return axios
+    .get("/api/projectAudit/auditList", { params: data })
+    .then((response) => {
+      return response;
+    })
+    .finally();
+}
+
 export default {
   async projectType(data) {
     return await projectType(data);
@@ -96,5 +123,14 @@ export default {
   },
   async updateProjectUser(projectId, data) {
     return await updateProjectUser(projectId, data);
+  },
+  async createProject(data) {
+    return await createProject(data);
+  },
+  async commitProject(data) {
+    return await commitProject(data);
+  },
+  async getProjectAuditList(data) {
+    return await getProjectAuditList(data);
   },
 };
