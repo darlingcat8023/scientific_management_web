@@ -5,6 +5,26 @@
         <el-form-item label="项目名称" :label-width="formLabelWidth">
           <el-input v-model="form.projectName"></el-input>
         </el-form-item>
+        <el-form-item label="项目等级" :label-width="formLabelWidth">
+         <el-select v-model="form.projectLevel" placeholder="请选择">
+           <el-option label="国家级项目" value="国家级项目"></el-option>
+           <el-option label="省部级项目" value="省部级项目"></el-option>
+           <el-option label="厅局级项目" value="厅局级项目"></el-option>
+         </el-select>
+        </el-form-item>
+        <el-form-item label="项目来源" :label-width="formLabelWidth">
+         <el-select v-model="form.projectSource" placeholder="请选择">
+           <el-option label="自然科学类" value="自然科学类"></el-option>
+           <el-option label="人文社科类" value="人文社科类"></el-option>
+         </el-select>
+        </el-form-item>
+        <el-form-item label="项目类别" :label-width="formLabelWidth">
+         <el-select v-model="form.projectPriority" placeholder="请选择">
+           <el-option label="重大项目" value="重大项目"></el-option>
+           <el-option label="重点项目" value="重点项目"></el-option>
+           <el-option label="一般项目" value="一般项目"></el-option>
+         </el-select>
+        </el-form-item>
         <el-form-item label="学科分类" :label-width="formLabelWidth">
           <el-input
             v-model="form.projectType"
@@ -49,6 +69,9 @@ export default {
         researchDirection: "",
         projectFund: 0,
         projectRemark: "",
+        projectLevel:"",
+        projectSource:"",
+        projectPriority:""
       },
       rules: {
         projectName: [
@@ -62,6 +85,15 @@ export default {
         ],
         projectRemark: [
           { required: true, message: "请输入项目备注", trigger: "blur" },
+        ],
+         projectLevel: [
+          { required: true, message: "请选择项目等级", trigger: "change" },
+        ],
+         projectSource: [
+          { required: true, message: "请选择项目来源", trigger: "change" },
+        ],
+         projectPriority: [
+          { required: true, message: "请选择项目类别", trigger: "change" },
         ],
       },
     };

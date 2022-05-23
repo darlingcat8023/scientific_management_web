@@ -3,6 +3,9 @@
     <el-table :data="projectList">
       <el-table-column label="ID" prop="id"></el-table-column>
       <el-table-column label="项目名称" prop="projectName"></el-table-column>
+      <el-table-column label="项目等级" prop="projectLevel"></el-table-column>
+      <el-table-column label="项目来源" prop="projectSource"></el-table-column>
+      <el-table-column label="项目类别" prop="projectPriority"></el-table-column>
       <el-table-column label="项目类型" prop="projectType"></el-table-column>
       <el-table-column label="研究方向" prop="researchDirection">
       </el-table-column>

@@ -16,6 +16,20 @@
         style="width: 156px"
         clearable
       ></el-input>
+      <el-select v-model="projectLevel" placeholder="请选择项目等级"  style="width: 156px; margin-left: 16px">
+        <el-option label="国家级项目" value="国家级项目"></el-option>
+        <el-option label="省部级项目" value="省部级项目"></el-option>
+        <el-option label="厅局级项目" value="厅局级项目"></el-option>
+      </el-select>
+      <el-select v-model="projectSource" placeholder="请选择项目来源" style="width: 156px; margin-left: 16px">
+        <el-option label="自然科学类" value="自然科学类"></el-option>
+        <el-option label="人文社科类" value="人文社科类"></el-option>
+      </el-select>
+      <el-select v-model="projectPriority" placeholder="请选择项目类别" style="width: 156px; margin-left: 16px">
+        <el-option label="重大项目" value="重大项目"></el-option>
+        <el-option label="重点项目" value="重点项目"></el-option>
+        <el-option label="一般项目" value="一般项目"></el-option>
+      </el-select>
       <el-select
         v-model="projectType"
         placeholder="请选择项目类型"
@@ -42,6 +56,7 @@
         <el-option label="已提交" value="2"></el-option>
         <el-option label="已通过" value="3"></el-option>
       </el-select>
+
       <el-input
         v-model="greaterThen"
         placeholder="预算区间"
@@ -68,6 +83,11 @@
       <el-table-column label="ID" prop="id" width="80"></el-table-column>
       <el-table-column label="项目名称" prop="projectName" width="180">
       </el-table-column>
+
+      <el-table-column label="项目等级" prop="projectLevel"></el-table-column>
+      <el-table-column label="项目来源" prop="projectSource"></el-table-column>
+      <el-table-column label="项目类别" prop="projectPriority"></el-table-column>
+
       <el-table-column label="项目预算" prop="projectFund"></el-table-column>
       <el-table-column label="学科分类" prop="projectType"></el-table-column>
       <el-table-column label="研究方向" prop="researchDirection">
@@ -199,6 +219,9 @@ export default {
       greaterThen: "",
       lessThen: "",
       projectTypeList: [],
+      projectLevel:"",
+      projectSource:"",
+      projectPriority:""
     };
   },
   methods: {
